@@ -5,4 +5,7 @@ An easy way to generate QR codes using the web browser.
 GET `/gen` and then use the query parameter `url` to input a URL.
 
 Example:
-`/gen?url=https://www.google.com`
+```
+/gen?url=https://www.google.com
+```
+This will generate a QR code for `https://www.google.com`.
