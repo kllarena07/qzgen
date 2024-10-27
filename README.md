@@ -1,6 +1,18 @@
 # qzgen
 An easy way to generate QR codes using the web browser.
 
+## Running project locally
+1. Clone the repo
+```
+git clone https://github.com/kllarena07/qzgen.git
+```
+2. Run Dockerfile
+```
+cd qzgen
+docker run -d -p 8080:8080 qzgen
+```
+3. Create a QR Code by visiting `127.0.0.1:8080`. See instructions below on how to generate a QR code
+
 ## How to use
 GET `/gen` and then use the query parameter `url` to input a URL.
 
