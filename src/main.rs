@@ -14,6 +14,8 @@ struct Info {
 async fn gen_qrcode(query: web::Query<Info>) -> Result<NamedFile> {
     let code = QrCode::new(query.url.as_bytes()).unwrap();
 
+    println!("Creating QR Code for URL: {}", query.url);
+
     let image = code.render::<Luma<u8>>().build();
     image.save("tmp/qrcode.jpg").unwrap();
 
