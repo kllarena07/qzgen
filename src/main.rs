@@ -1,19 +1,36 @@
-use actix_web::{get, App, HttpResponse, HttpServer, Responder};
+use actix_files::NamedFile;
+use actix_web::{get, web, App, HttpServer, Result};
+use std::path::PathBuf;
+use qrcode::QrCode;
+use image::Luma;
+use serde::Deserialize;
 
-#[get("/")]
-async fn index() -> impl Responder {
-    HttpResponse::Ok().body("Hello world!")
+#[derive(Deserialize)]
+struct Info {
+    url: String
+}
+
+#[get("/gen")]
+async fn gen_qrcode(query: web::Query<Info>) -> Result<NamedFile> {
+    let code = QrCode::new(query.url.as_bytes()).unwrap();
+
+    let image = code.render::<Luma<u8>>().build();
+    image.save("tmp/qrcode.jpg").unwrap();
+
+    let file_path = PathBuf::from("tmp/qrcode.jpg");
+
+    NamedFile::open(file_path).map_err(|e| actix_web::error::ErrorInternalServerError(e))
 }
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    println!("Starting server on 127.0.0.1:8080");
+    println!("Starting server on 0.0.0.0:8080");
 
     HttpServer::new(|| {
         App::new()
-            .service(index)
-   })
-    .bind(("127.0.0.1", 8080))?
-    .run()
-    .await
+            .service(gen_qrcode)
+    })
+    .bind(("0.0.0.0", 8080))?
+        .run()
+        .await
 }
